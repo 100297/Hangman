@@ -1,5 +1,6 @@
 package HangPack;
 
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.BufferedReader;
@@ -16,6 +17,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Hangman implements KeyListener {
+	int wordsi;
+	int kscore;
+	JLabel won;
+	JLabel gameover;
 	JFrame fram;
 	JPanel pan;
 	String currentword;
@@ -31,12 +36,16 @@ public class Hangman implements KeyListener {
 	int lives;
 	JLabel jlives;
 	boolean isadded;
+
 	public static void main(String[] args) {
 		Hangman a = new Hangman();
 		a.activate();
 	}
 
 	void activate() {
+		kscore = -1;
+		won = new JLabel();
+		gameover = new JLabel();
 		jlives = new JLabel();
 		lives = 10;
 		jlives.setText(lives + "");
@@ -52,8 +61,10 @@ public class Hangman implements KeyListener {
 		fram.addKeyListener(this);
 		words = new ArrayList<String>();
 		letters = new ArrayList<JLabel>();
+		fram.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 		String wordstr = JOptionPane.showInputDialog("How many words would you like to answer?");
-		int wordsi = Integer.parseInt(wordstr);
+		wordsi = Integer.parseInt(wordstr);
 		try {
 			BufferedReader br = new BufferedReader(new FileReader("src/HangPack/dictionary.txt"));
 
@@ -62,10 +73,16 @@ public class Hangman implements KeyListener {
 			Random ran = new Random();
 			for (int i = 0; i < wordsi; i++) {
 				ranas = ran.nextInt(2998);
-				for (int j = 0; j < 2998; j++) {
+				for (int j = 0; j <= ranas; j++) {
+					String line = br.readLine();
 					if (ranas == j) {
-						String line = br.readLine();
+						ranas = ran.nextInt(2998);
+						line = br.readLine();
+						System.out.println(line);
 						words.add(line);
+						br.close();
+						br = new BufferedReader(new FileReader("src/HangPack/dictionary.txt"));
+
 					}
 				}
 
@@ -90,12 +107,24 @@ public class Hangman implements KeyListener {
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
+
+		String currentchar = "";
 		System.out.println(currentword);
 		chars = new ArrayList<Character>();
 		char key = e.getKeyChar();
 		dashchars = new ArrayList<Character>();
 		String fkey = "" + key;
 		ctwords += fkey;
+		if (currentword.contains(fkey)) {
+
+		} else {
+			lives--;
+		}
+		if (lives == 0) {
+			fram.remove(pan);
+			fram.add(gameover);
+			gameover.setText("You Lost");
+		}
 		for (int i = 0; i < currentword.length(); i++) {
 			chars.add(currentword.charAt(i));
 		}
@@ -105,23 +134,26 @@ public class Hangman implements KeyListener {
 
 		for (int i = 0; i < chars.size(); i++) {
 			if (chars.get(i).equals(key)) {
-				labelText = labelText.substring(0, i) + fkey + labelText.substring(i+1, labelText.length());
+
+				labelText = labelText.substring(0, i) + fkey + labelText.substring(i + 1, labelText.length());
 				System.out.println("printing");
-				
+
 			} else {
-				lives--;
+				System.out.println("life");
 			}
-			
+
 		}
 		System.out.println(labelText);
 		dashes.setText(labelText);
-		if(labelText.contains("-")) {	
-			
+		
+
+		if (labelText.contains("-")) {
+
 		} else {
 			spellword();
 		}
 		jlives.setText(lives + "");
-	}
+			}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -136,18 +168,27 @@ public class Hangman implements KeyListener {
 	}
 
 	void spellword() {
-
+		Font font = new Font("Papyrus", Font.BOLD, 200);
+		kscore++;
+		if(kscore == wordsi) {
+			fram.remove(pan);
+			fram.add(won);
+			won.setFont(font);
+			won.setText("You Won");
+		}
+		System.out.println(finwords.peek());
 		currentword = finwords.pop();
-		letters.clear();
 		
+		letters.clear();
+
 		labelText = "";
 		for (int j = 0; j < currentword.length(); j++) {
 			labelText += "-";
 
 		}
 		dashes.setText(labelText);
-		
 
+	
 	}
 
 }
