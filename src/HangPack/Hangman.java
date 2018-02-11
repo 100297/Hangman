@@ -145,7 +145,6 @@ public class Hangman implements KeyListener {
 		}
 		System.out.println(labelText);
 		dashes.setText(labelText);
-		
 
 		if (labelText.contains("-")) {
 
@@ -153,7 +152,7 @@ public class Hangman implements KeyListener {
 			spellword();
 		}
 		jlives.setText(lives + "");
-			}
+	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -170,7 +169,7 @@ public class Hangman implements KeyListener {
 	void spellword() {
 		Font font = new Font("Papyrus", Font.BOLD, 200);
 		kscore++;
-		if(kscore == wordsi) {
+		if (kscore == wordsi) {
 			fram.remove(pan);
 			fram.add(won);
 			won.setFont(font);
@@ -178,7 +177,7 @@ public class Hangman implements KeyListener {
 		}
 		System.out.println(finwords.peek());
 		currentword = finwords.pop();
-		
+
 		letters.clear();
 
 		labelText = "";
@@ -188,7 +187,6 @@ public class Hangman implements KeyListener {
 		}
 		dashes.setText(labelText);
 
-	
 	}
 
 }
